@@ -94,7 +94,9 @@ db.dashboard_configs.updateOne(
 
 4. Refresh the admin page. The dashboard changes without code changes. The chat UI remains unchanged.
 
-The admin page also has safe demo controls that PATCH the same `sections` shape through the route handler.
+The admin page includes safe edit controls that PATCH the same `sections` shape through the route handler.
+It also includes admin edit controls for Shopify-style product records and for dashboard widgets:
+edit labels, reorder widgets, delete widgets, and add a product-record widget to any section.
 
 The dashboard renderer supports widget types such as `metric`, `insight`, `integrationStatus`, `integrationRecords`,
 `list`, and `action`, but the section structure, labels, widget list, and widget order come from MongoDB. For example,

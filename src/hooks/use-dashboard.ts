@@ -5,6 +5,7 @@ import { dashboardKey } from "@/hooks/use-project";
 import type {
   DashboardConfig,
   DashboardSection,
+  IntegrationKey,
   ProductInstance,
   Project,
 } from "@/lib/types";
@@ -36,6 +37,31 @@ export function useSaveDashboard(projectSlug: string) {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: dashboardKey(projectSlug) });
+    },
+  });
+}
+
+export function useSaveProductRecords(projectSlug: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      integration,
+      records,
+    }: {
+      integration: IntegrationKey;
+      records: string[];
+    }) =>
+      fetchJson<ProductInstance>(
+        `/api/projects/${projectSlug}/admin/product-instance`,
+        {
+          method: "PATCH",
+          body: JSON.stringify({ integration, records }),
+        },
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: dashboardKey(projectSlug) });
+      queryClient.invalidateQueries({ queryKey: ["project", projectSlug] });
     },
   });
 }

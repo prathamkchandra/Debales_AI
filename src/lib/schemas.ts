@@ -95,3 +95,8 @@ export const dashboardConfigSchema = z.object({
     )
     .min(1),
 });
+
+export const productRecordsSchema = z.object({
+  integration: integrationKeySchema,
+  records: z.array(z.string().trim().min(1).max(240)).max(50),
+});

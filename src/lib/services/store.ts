@@ -88,6 +88,28 @@ export async function getProductInstanceByProject(projectId: string) {
   );
 }
 
+export async function saveProductInstance(productInstance: ProductInstance) {
+  if (await canUseMongo()) {
+    await ProductInstanceModel.findOneAndUpdate(
+      { id: productInstance.id },
+      productInstance,
+      { new: true, setDefaultsOnInsert: true, upsert: true },
+    );
+  } else {
+    const index = seedStore.productInstances.findIndex(
+      (item) => item.id === productInstance.id,
+    );
+
+    if (index >= 0) {
+      seedStore.productInstances[index] = clone(productInstance);
+    } else {
+      seedStore.productInstances.push(clone(productInstance));
+    }
+  }
+
+  return clone(productInstance);
+}
+
 export async function listConversationsByProject(projectId: string) {
   if (await canUseMongo()) {
     const docs = await ConversationModel.find(
