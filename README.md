@@ -1,6 +1,6 @@
 # Debales AI Internship Assignment
 
-Multi-tenant AI assistant demo built with Next.js App Router, React, TypeScript, Tailwind CSS, TanStack Query, Zod, and Mongoose.
+Multi-tenant AI assistant built with Next.js App Router, React, TypeScript, Tailwind CSS, TanStack Query, Zod, and Mongoose.
 
 ## Run
 
@@ -72,7 +72,19 @@ Server checks protect project access and the admin dashboard. Switching to Noah 
 
 ## Config-Driven Admin Proof
 
-Only the admin dashboard is config-driven, as requested. The chat/product shell uses normal React components.
+Only the admin dashboard is config-driven for the core requirement. The chat/product shell uses normal React components.
+
+Config-driven behavior lives in:
+
+- MongoDB collection: `dashboard_configs`
+- Seed fallback: `src/lib/seed.ts`
+- Seed script: `scripts/seed.mjs`
+- Server service: `src/lib/services/admin-service.ts`
+- API route: `src/app/api/projects/[projectSlug]/admin/dashboard/route.ts`
+- Renderer/editor: `src/components/admin-dashboard.tsx`
+
+The dashboard config controls section structure, section titles/descriptions, widget labels, widget type list, widget
+order, and widget presence. The React component only contains reusable renderers for supported widget types.
 
 To verify with MongoDB:
 
@@ -116,8 +128,48 @@ integration without changing React code:
 Reordering widgets is also just a document update. For example, moving `sections.1.widgets` around in MongoDB changes the
 admin dashboard order after refresh.
 
+The seeded admin config includes five sections: `exec`, `ops`, `revenue`, `customer-growth`, and `governance`. These
+sections use only config-driven widgets, so renaming, reordering, removing, or adding widgets in MongoDB changes the
+admin page after refresh.
+
 ## Assumptions And Mocked Pieces
 
-- Shopify-style and CRM-style integrations are simulated and stored on the product instance.
-- AI calls use OpenRouter or Gemini when keys are configured, otherwise a controlled message-aware fallback is used.
-- The seeded fallback is provided so reviewers can run the demo locally without database setup.
+- AI is optional. When `OPENROUTER_API_KEY` or `GEMINI_API_KEY` is configured, the service calls that provider. When no key is configured, `src/lib/services/ai-service.ts` returns a controlled message-aware fallback so the demo remains runnable.
+- Shopify-style and CRM-style integrations are mocked. Their records are stored on `product_instances.integrations.*.mockRecords`; no live Shopify or CRM API is called.
+- Auth is mocked with the `debales_user` cookie and the `Login as` switcher. Server-side authorization checks still enforce project access and admin-only dashboard access.
+- MongoDB is real when `MONGODB_URI` is configured. If MongoDB is unavailable, the app falls back to the seeded in-memory data in `src/lib/seed.ts`.
+- The admin dashboard is the only config-driven UI surface required by the assignment. Chat remains conventional React UI while the admin dashboard structure is loaded from `dashboard_configs`.
+
+## Loom Walkthrough
+
+Use this 5-10 minute outline for the submission video:
+
+1. Start the app and open `/projects/acme-retail/chat/conv-sales`.
+2. Use the `Login as` switcher to show `Ava Morgan` can access admin and `Noah Patel` is blocked from admin.
+3. Open `/projects/acme-retail/admin` as `Ava Morgan`.
+4. Point out the dashboard sections and widgets are loaded from `dashboard_configs.sections`.
+5. In MongoDB Atlas, open database `Debales_ai`, collection `dashboard_configs`, document `id = "dash-acme-sales"`.
+6. Edit a visible value, for example:
+
+```js
+db.dashboard_configs.updateOne(
+  { id: "dash-acme-sales" },
+  {
+    $set: {
+      "sections.0.title": "Executive pulse from MongoDB",
+      "sections.0.widgets.0.value": "$91.7k"
+    }
+  }
+)
+```
+
+7. Refresh the admin dashboard and show the title/value changed without a code change.
+8. Use the dashboard editor to rename/reorder a widget, save it, refresh, and show the config persists.
+9. Explain mocked pieces: AI fallback without keys, simulated Shopify/CRM records, cookie-based demo auth.
+10. Close by showing the relevant files: `admin-service.ts`, `dashboard/route.ts`, `admin-dashboard.tsx`, and `seed.ts`.
+
+## Troubleshooting
+
+If `npm install` fails with `getaddrinfo ENOTFOUND registry.npmjs.org`, the machine cannot resolve or reach the npm
+registry. Check internet/DNS/VPN/proxy settings, then retry. If `node_modules` already exists, you can usually continue
+with `npm run dev` without reinstalling.

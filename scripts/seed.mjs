@@ -203,6 +203,105 @@ const dashboardConfigs = [
             integration: "shopify",
             emptyState: "Add Shopify-style mock records to this product instance.",
           },
+          {
+            id: "action-video-proof",
+            type: "action",
+            label: "Config proof",
+            cta: "Edit dashboard_configs.sections in MongoDB and refresh",
+            target: "dashboard_configs",
+          },
+        ],
+      },
+      {
+        id: "revenue",
+        title: "Revenue operations",
+        description:
+          "Sales and merchandising signals controlled by the dashboard config document.",
+        widgets: [
+          {
+            id: "metric-aov",
+            type: "metric",
+            label: "Average order value",
+            value: "$72",
+            delta: "+5.1% vs last week",
+            tone: "good",
+          },
+          {
+            id: "metric-wholesale-pipeline",
+            type: "metric",
+            label: "Wholesale pipeline",
+            value: "$31k",
+            delta: "Atlas Fitness proposal pending",
+            tone: "watch",
+          },
+          {
+            id: "insight-bundle-opportunity",
+            type: "insight",
+            label: "Bundle opportunity",
+            body: "Gift Kit has margin room and is campaign ready. Pair it with the inactive customer cohort before expanding paid spend.",
+            severity: "info",
+          },
+        ],
+      },
+      {
+        id: "customer-growth",
+        title: "Customer growth",
+        description:
+          "CRM-oriented widgets that can be reordered or renamed from MongoDB.",
+        widgets: [
+          {
+            id: "crm-records",
+            type: "integrationRecords",
+            label: "CRM account records",
+            integration: "crm",
+            emptyState: "Add CRM-style mock records to this product instance.",
+          },
+          {
+            id: "list-priority-segments",
+            type: "list",
+            label: "Priority segments",
+            items: [
+              "VIP buyers with recent purchase intent",
+              "Wholesale leads with open proposals",
+              "30-day inactive customers for win-back",
+            ],
+          },
+          {
+            id: "insight-vip-follow-up",
+            type: "insight",
+            label: "VIP follow-up",
+            body: "Mira Chen ordered 4 days ago. Route a personalized Gift Kit offer while the account is still warm.",
+            severity: "info",
+          },
+        ],
+      },
+      {
+        id: "governance",
+        title: "Admin governance",
+        description:
+          "Operational controls proving that dashboard behavior is stored as configuration.",
+        widgets: [
+          {
+            id: "metric-config-widgets",
+            type: "metric",
+            label: "Config widgets",
+            value: "16",
+            delta: "Loaded from dashboard_configs.sections",
+            tone: "good",
+          },
+          {
+            id: "action-config-edit",
+            type: "action",
+            label: "MongoDB proof",
+            cta: "Rename, reorder, add, or remove widgets in dashboard_configs and refresh this admin dashboard.",
+            target: "dashboard_configs.sections",
+          },
+          {
+            id: "integration-governance",
+            type: "integrationStatus",
+            label: "Integration governance",
+            integrations: ["shopify", "crm"],
+          },
         ],
       },
     ],
