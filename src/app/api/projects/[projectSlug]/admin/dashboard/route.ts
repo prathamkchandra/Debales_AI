@@ -8,6 +8,8 @@ import {
 } from "@/lib/services/admin-service";
 import { getRequestUserId } from "@/lib/services/session-service";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   request: Request,
   { params }: { params: { projectSlug: string } },

@@ -4,6 +4,8 @@ import { AccessError } from "@/lib/access";
 import { getAdminDashboard } from "@/lib/services/admin-service";
 import { getPageUserId } from "@/lib/services/session-service";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPage({
   params,
 }: {
